@@ -3,9 +3,10 @@ from __future__ import annotations
 from typing import Callable
 
 from langchain_core.documents import Document
+from langchain_core.messages import HumanMessage
 
 from config import load_env
-from rag import get_vectorstore
+from rag import get_llm, get_vectorstore
 
 
 PROMPT_TEMPLATE = """
@@ -92,6 +93,26 @@ def search_context(
 
 def build_prompt(*, contexto: str, pergunta: str) -> str:
     return PROMPT_TEMPLATE.format(contexto=contexto, pergunta=pergunta)
+
+
+def answer_question(
+    question: str,
+    *,
+    k: int = 10,
+    max_context_chars: int = 12_000,
+) -> tuple[str, list[tuple[Document, float]]]:
+    """
+    Recupera contexto e chama a LLM com o prompt fixo.
+    Retorna (resposta_texto, resultados_retrieval).
+    """
+    contexto, results = search_context(question, k=k, max_context_chars=max_context_chars)
+    prompt = build_prompt(contexto=contexto, pergunta=question)
+
+    llm = get_llm()
+    # Prompt already includes the full instructions; send as a single user message.
+    msg = llm.invoke([HumanMessage(content=prompt)])
+    content = getattr(msg, "content", "") or ""
+    return str(content).strip(), results
 
 
 def search_prompt(

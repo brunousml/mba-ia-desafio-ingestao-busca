@@ -7,27 +7,37 @@ def get_embeddings():
     p = provider()
 
     if p == "openai":
-        from langchain_openai import OpenAIEmbeddings
+        from llm.openai import get_embeddings as get_openai_embeddings
 
-        api_key = env("OPENAI_API_KEY", prompt="OPENAI_API_KEY", secret=True)
-        model = env(
-            "OPENAI_EMBEDDING_MODEL",
-            prompt="OPENAI_EMBEDDING_MODEL",
-            default="text-embedding-3-small",
-        )
-        return OpenAIEmbeddings(api_key=api_key, model=model)
+        return get_openai_embeddings()
 
     if p == "gemini":
-        from langchain_google_genai import GoogleGenerativeAIEmbeddings
+        from llm.gemini import get_embeddings as get_gemini_embeddings
 
-        api_key = env("GOOGLE_API_KEY", prompt="GOOGLE_API_KEY", secret=True)
-        model = env(
-            "GOOGLE_EMBEDDING_MODEL",
-            prompt="GOOGLE_EMBEDDING_MODEL",
-            default="models/embedding-001",
-        )
-        return GoogleGenerativeAIEmbeddings(google_api_key=api_key, model=model)
+        return get_gemini_embeddings()
 
+    raise ValueError("Provider invalido. Use PROVIDER=openai ou PROVIDER=gemini.")
+
+
+def get_openai_llm():
+    from llm.openai import get_llm as get_openai_llm_impl
+
+    return get_openai_llm_impl()
+
+
+def get_gemini_llm():
+    from llm.gemini import get_llm as get_gemini_llm_impl
+
+    return get_gemini_llm_impl()
+
+
+def get_llm():
+    p = provider()
+
+    if p == "openai":
+        return get_openai_llm()
+    if p == "gemini":
+        return get_gemini_llm()
     raise ValueError("Provider invalido. Use PROVIDER=openai ou PROVIDER=gemini.")
 
 
@@ -41,4 +51,3 @@ def get_vectorstore(*, pre_delete_collection: bool = False) -> PGVector:
         connection=database_url,
         pre_delete_collection=pre_delete_collection,
     )
-
