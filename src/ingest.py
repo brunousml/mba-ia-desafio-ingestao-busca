@@ -2,42 +2,13 @@ import argparse
 from pathlib import Path
 
 from langchain_community.document_loaders import PyPDFLoader
-from langchain_postgres import PGVector
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-from config import env, load_env, provider
-
-
-def _embeddings():
-    p = provider()
-
-    if p == "openai":
-        from langchain_openai import OpenAIEmbeddings
-
-        api_key = env("OPENAI_API_KEY", prompt="OPENAI_API_KEY", secret=True)
-        model = env(
-            "OPENAI_EMBEDDING_MODEL",
-            prompt="OPENAI_EMBEDDING_MODEL",
-            default="text-embedding-3-small",
-        )
-        return OpenAIEmbeddings(api_key=api_key, model=model)
-
-    if p == "gemini":
-        from langchain_google_genai import GoogleGenerativeAIEmbeddings
-
-        api_key = env("GOOGLE_API_KEY", prompt="GOOGLE_API_KEY", secret=True)
-        model = env(
-            "GOOGLE_EMBEDDING_MODEL",
-            prompt="GOOGLE_EMBEDDING_MODEL",
-            default="models/embedding-001",
-        )
-        return GoogleGenerativeAIEmbeddings(google_api_key=api_key, model=model)
-
-    raise ValueError("Provider invalido. Use PROVIDER=openai ou PROVIDER=gemini.")
+from config import env, load_env
+from rag import get_vectorstore
 
 
 def ingest_pdf(*, pdf_path: str, reset: bool) -> None:
-    database_url = env("DATABASE_URL", prompt="DATABASE_URL")
     collection_name = env("PG_VECTOR_COLLECTION_NAME", prompt="PG_VECTOR_COLLECTION_NAME")
 
     pdf_file = Path(pdf_path).expanduser()
@@ -50,12 +21,7 @@ def ingest_pdf(*, pdf_path: str, reset: bool) -> None:
     splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=150)
     chunks = splitter.split_documents(pages)
 
-    vectorstore = PGVector(
-        embeddings=_embeddings(),
-        collection_name=collection_name,
-        connection=database_url,
-        pre_delete_collection=reset,
-    )
+    vectorstore = get_vectorstore(pre_delete_collection=reset)
 
     vectorstore.add_documents(chunks)
 
@@ -87,4 +53,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

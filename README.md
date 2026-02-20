@@ -23,10 +23,14 @@ Preencha os valores obrigatórios no `.env`, principalmente:
 - `DATABASE_URL`
 - `PG_VECTOR_COLLECTION_NAME`
 - `PDF_PATH`
+- `PROVIDER` (opcional; `openai` ou `gemini`)
 
 Exemplo de `.env` (baseado em `.env.example`):
 
 ```bash
+# Provider (opcional; se ausente o script pergunta em runtime)
+PROVIDER=openai
+
 # OpenAI (opcional se usar Gemini)
 OPENAI_API_KEY=seu_token_aqui
 OPENAI_EMBEDDING_MODEL=text-embedding-3-small
@@ -114,3 +118,14 @@ Dentro do `psql`, liste tabelas e verifique registros:
 -- Em instalações padrão do langchain-postgres, procure por tabelas como:
 -- langchain_pg_collection / langchain_pg_embedding
 ```
+
+## Testar busca (sem LLM) e montagem do prompt
+
+Após ingerir o PDF, você pode testar a recuperação (top-k) e a montagem do prompt (Etapa 3) direto pelo terminal:
+
+```bash
+python3 -c "from src.search import search_prompt; run=search_prompt(); prompt,_=run('Qual o faturamento?'); print(prompt[:800])"
+```
+
+- Esse teste imprime o início do prompt (com `CONTEXTO` + `REGRAS`).
+- Se alguma variável não estiver no ambiente/.env, será solicitada em tempo de execução.
