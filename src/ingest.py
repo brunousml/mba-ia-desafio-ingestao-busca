@@ -1,7 +1,8 @@
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
+from config import load_env
+
+load_env()
 
 PDF_PATH = os.getenv("PDF_PATH")
 
