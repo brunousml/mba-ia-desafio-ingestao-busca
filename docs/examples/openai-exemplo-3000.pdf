@@ -1,0 +1,162 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 3549 >>
+stream
+BT
+/F1 12 Tf
+72 770 Td
+14 TL
+(Guia pratico: uso da OpenAI em um projeto Python) Tj
+T*
+() Tj
+T*
+(1\) Chaves e seguranca) Tj
+T*
+(- Guarde a OPENAI_API_KEY em variavel de ambiente \(.env\) e nunca comite no git.) Tj
+T*
+(- Em runtime, valide se a chave existe e, se nao existir, solicite o input no terminal.) Tj
+T*
+() Tj
+T*
+(2\) Modelos e custo) Tj
+T*
+(- Para embeddings, use um modelo de embeddings e mantenha o mesmo na ingestao e na busca.) Tj
+T*
+(- Para respostas \(LLM\), escolha um modelo adequado ao tamanho do contexto e latencia) Tj
+T*
+(desejada.) Tj
+T*
+(- Controle custos limitando o tamanho do contexto e o numero de documentos recuperados.) Tj
+T*
+() Tj
+T*
+(3\) Embeddings e RAG) Tj
+T*
+(- Extraia texto do PDF, divida em chunks \(por exemplo 1000 caracteres com overlap 150\).) Tj
+T*
+(- Gere embeddings de cada chunk e armazene em um banco vetorial \(por exemplo Postgres com) Tj
+T*
+(pgvector\).) Tj
+T*
+(- Na pergunta, gere embedding da query e recupere os top-k mais similares \(k=10\).) Tj
+T*
+(- Monte o prompt com CONTEXTO e REGRAS para responder somente com base no contexto) Tj
+T*
+(recuperado.) Tj
+T*
+() Tj
+T*
+(4\) Qualidade e confiabilidade) Tj
+T*
+(- Use temperatura baixa para reduzir alucinacao.) Tj
+T*
+(- Logue k, scores e paginas para depurar recuperacao.) Tj
+T*
+(- Se o contexto nao contiver a informacao, responda com uma mensagem padrao de falta de) Tj
+T*
+(dados.) Tj
+T*
+() Tj
+T*
+(5\) Operacao) Tj
+T*
+(- Defina timeouts de rede e trate erros de API e de conexao com o banco.) Tj
+T*
+(- Rode a ingestao antes do chat e mantenha uma rotina para resetar a colecao em) Tj
+T*
+(desenvolvimento.) Tj
+T*
+() Tj
+T*
+(Boas praticas adicionais: mantenha prompts versionados, use validacao de entrada, e) Tj
+T*
+(monitore latencia e taxa de erros para evoluir o sistema com seguranca.) Tj
+T*
+() Tj
+T*
+(Boas praticas adicionais: mantenha prompts versionados, use validacao de entrada, e) Tj
+T*
+(monitore latencia e taxa de erros para evoluir o sistema com seguranca.) Tj
+T*
+() Tj
+T*
+(Boas praticas adicionais: mantenha prompts versionados, use validacao de entrada, e) Tj
+T*
+(monitore latencia e taxa de erros para evoluir o sistema com seguranca.) Tj
+T*
+() Tj
+T*
+(Boas praticas adicionais: mantenha prompts versionados, use validacao de entrada, e) Tj
+T*
+(monitore latencia e taxa de erros para evoluir o sistema com seguranca.) Tj
+T*
+() Tj
+T*
+(Boas praticas adicionais: mantenha prompts versionados, use validacao de entrada, e) Tj
+T*
+(monitore latencia e taxa de erros para evoluir o sistema com seguranca.) Tj
+T*
+() Tj
+T*
+(Boas praticas adicionais: mantenha prompts versionados, use validacao de entrada, e) Tj
+T*
+(monitore latencia e taxa de erros para evoluir o sistema com seguranca.) Tj
+T*
+() Tj
+T*
+(Boas praticas adicionais: mantenha prompts versionados, use validacao de entrada, e) Tj
+T*
+(monitore latencia e taxa de erros para evoluir o sistema com seguranca.) Tj
+T*
+() Tj
+T*
+(Boas praticas adicionais: mantenha prompts versionados, use validacao de entrada, e) Tj
+T*
+(monitore latencia e taxa de erros para evoluir o sistema com seguranca.) Tj
+T*
+() Tj
+T*
+(Boas praticas adicionais: mantenha prompts versionados, use validacao de entrada, e) Tj
+T*
+(monitore latencia e taxa de erros para evoluir o sistema com seguranca.) Tj
+T*
+() Tj
+T*
+(Boas praticas adicionais: mantenha prompts versionados, use validacao de entrada, e) Tj
+T*
+(monitore latencia e taxa de erros para evoluir o sistema com seguranca.) Tj
+T*
+() Tj
+T*
+(Boas praticas adicionais: mantenha prompts versionados, use validacao de entrada, e) Tj
+T*
+(monitore lat.) Tj
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000247 00000 n 
+0000000317 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+3917
+%%EOF
