@@ -22,5 +22,8 @@ def get_llm():
         prompt="GOOGLE_LLM_MODEL",
         default="gemini-2.5-flash-lite",
     )
-    return ChatGoogleGenerativeAI(google_api_key=api_key, model=model, temperature=0)
-
+    try:
+        temperature = float(env("LLM_TEMPERATURE", prompt="LLM_TEMPERATURE", default="0"))
+    except ValueError as e:
+        raise ValueError("LLM_TEMPERATURE deve ser um numero (ex: 0, 0.2, 1).") from e
+    return ChatGoogleGenerativeAI(google_api_key=api_key, model=model, temperature=temperature)

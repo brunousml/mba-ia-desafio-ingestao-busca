@@ -24,12 +24,14 @@ Preencha os valores obrigatórios no `.env`, principalmente:
 - `PG_VECTOR_COLLECTION_NAME`
 - `PDF_PATH`
 - `PROVIDER` (opcional; `openai` ou `gemini`)
+- `LLM_TEMPERATURE` (opcional; default `0`)
 
 Exemplo de `.env` (baseado em `.env.example`):
 
 ```bash
 # Provider (opcional; se ausente o script pergunta em runtime)
 PROVIDER=openai
+LLM_TEMPERATURE=0
 
 # OpenAI (opcional se usar Gemini)
 OPENAI_API_KEY=seu_token_aqui
@@ -45,6 +47,22 @@ PG_VECTOR_COLLECTION_NAME=rag_docs
 
 # PDF
 PDF_PATH=./document.pdf
+```
+
+### Como configurar `LLM_TEMPERATURE` (referências)
+
+`LLM_TEMPERATURE` controla o grau de aleatoriedade/criatividade da LLM. Para este desafio (responder apenas com base no CONTEXTO), valores baixos tendem a ser melhores.
+
+- `0` (recomendado): mais determinístico, menor risco de inventar.
+- `0.1` a `0.3`: ainda bem controlado, com pequena variação.
+- `0.5` a `0.8`: mais “criativo”, aumenta risco de sair do contexto.
+- `1.0+`: alta variabilidade; geralmente não recomendado para RAG restrito.
+
+Exemplos:
+
+```bash
+LLM_TEMPERATURE=0
+LLM_TEMPERATURE=0.2
 ```
 
 Exemplo de `DATABASE_URL` local:
@@ -76,6 +94,26 @@ Após configurar o ambiente, execute os scripts da pasta `src` conforme a implem
 ```bash
 python3 src/ingest.py
 python3 src/chat.py
+```
+
+## Rodar o chat (CLI)
+
+Após a ingestão, rode o chat:
+
+```bash
+python3 src/chat.py
+```
+
+Comandos no chat:
+
+- `:help` mostra ajuda
+- `:exit` ou `:quit` sai do chat
+
+Opções úteis:
+
+```bash
+python3 src/chat.py --debug
+python3 src/chat.py --k 10 --max-context-chars 12000
 ```
 
 ## Testar upload (ingestão) de arquivos PDF

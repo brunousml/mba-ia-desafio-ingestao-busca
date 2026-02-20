@@ -18,5 +18,8 @@ def get_llm():
 
     api_key = env("OPENAI_API_KEY", prompt="OPENAI_API_KEY", secret=True)
     model = env("OPENAI_LLM_MODEL", prompt="OPENAI_LLM_MODEL", default="gpt-5-nano")
-    return ChatOpenAI(api_key=api_key, model=model, temperature=0)
-
+    try:
+        temperature = float(env("LLM_TEMPERATURE", prompt="LLM_TEMPERATURE", default="0"))
+    except ValueError as e:
+        raise ValueError("LLM_TEMPERATURE deve ser um numero (ex: 0, 0.2, 1).") from e
+    return ChatOpenAI(api_key=api_key, model=model, temperature=temperature)
