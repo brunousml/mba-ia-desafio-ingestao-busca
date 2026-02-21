@@ -1,7 +1,7 @@
 import argparse
 
-from config import load_env
-from search import answer_question
+from libs.config import load_env
+from libs.search import answer_question
 
 HELP_TEXT = """\
 Comandos:

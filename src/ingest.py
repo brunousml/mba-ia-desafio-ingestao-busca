@@ -4,8 +4,8 @@ from pathlib import Path
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-from config import env, load_env
-from rag import get_vectorstore
+from libs.config import env, load_env
+from libs.rag import get_vectorstore
 
 
 def ingest_pdf(*, pdf_path: str, reset: bool) -> None:
