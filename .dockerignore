@@ -1,0 +1,9 @@
+.git
+.idea
+__pycache__
+*.pyc
+venv
+.venv
+out
+.env
+.DS_Store

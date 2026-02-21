@@ -1,0 +1,70 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: postgres_rag
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: rag
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d rag"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  bootstrap_vector_ext:
+    image: pgvector/pgvector:pg17
+    depends_on:
+      postgres:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      PGPASSWORD=postgres
+      psql "postgresql://postgres@postgres:5432/rag" -v ON_ERROR_STOP=1
+      -c "CREATE EXTENSION IF NOT EXISTS vector;"
+    restart: "no"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /app
+    env_file:
+      - .env
+    environment:
+      # Sensible defaults for docker-compose; can be overridden via .env
+      # Importante: dentro do container, "localhost" aponta para o proprio container.
+      # Use DATABASE_URL_DOCKER para sobrescrever sem quebrar execucao local (host).
+      DATABASE_URL: ${DATABASE_URL_DOCKER:-postgresql+psycopg://postgres:postgres@postgres:5432/rag}
+      PG_VECTOR_COLLECTION_NAME: ${PG_VECTOR_COLLECTION_NAME:-rag_docs}
+      PDF_PATH: ${PDF_PATH:-/app/document.pdf}
+      PROVIDER: ${PROVIDER:-openai}
+      LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0}
+      PYTHONUNBUFFERED: "1"
+    volumes:
+      - .:/app
+    depends_on:
+      bootstrap_vector_ext:
+        condition: service_completed_successfully
+
+  ingest:
+    extends:
+      service: app
+    command: ["python3", "src/ingest.py"]
+    restart: "no"
+
+  chat:
+    extends:
+      service: app
+    command: ["python3", "src/chat.py"]
+    stdin_open: true
+    tty: true
+    restart: "no"
+
+volumes:
+  postgres_data:
