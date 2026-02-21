@@ -44,7 +44,6 @@ PDF_PATH=./document.pdf
 
 Observação: `LLM_TEMPERATURE=0` é recomendado para reduzir risco de respostas fora do CONTEXTO.
 
-
 # Execução Local via terminal
 ## Ordem de execução
 
@@ -73,93 +72,3 @@ docker compose -f docker-compose-rag.yml run --rm chat
 ```
 
 Observação: para execução via Docker, configure `DATABASE_URL_DOCKER` no `.env` (ex.: `postgresql+psycopg://postgres:postgres@postgres:5432/rag`). Dentro do container, `localhost` não aponta para o serviço do banco.
-
-## 1) Configurar variáveis de ambiente
-
-Crie o arquivo `.env` a partir do exemplo:
-
-```bash
-cp .env.example .env
-```
-
-Preencha os valores no `.env` (ou deixe para o script solicitar em runtime), principalmente:
-
-- `OPENAI_API_KEY` (ou `GOOGLE_API_KEY` se usar Gemini)
-- `DATABASE_URL`, `PG_VECTOR_COLLECTION_NAME`
-- `PDF_PATH`
-
-Exemplo de `.env`:
-
-```bash
-PROVIDER=openai
-LLM_TEMPERATURE=0
-
-OPENAI_API_KEY=seu_token_aqui
-OPENAI_EMBEDDING_MODEL=text-embedding-3-small
-OPENAI_LLM_MODEL=gpt-5-nano
-
-
-GOOGLE_API_KEY=seu_token_aqui
-GOOGLE_EMBEDDING_MODEL=gemini-embedding-001
-GOOGLE_LLM_MODEL=gemini-2.5-flash-lite
-
-DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5432/rag
-PG_VECTOR_COLLECTION_NAME=rag_docs
-
-PDF_PATH=./document.pdf
-```
-
-Observação: `LLM_TEMPERATURE=0` é recomendado para reduzir risco de respostas fora do CONTEXTO.
-
-## 2) Subir banco com pgvector
-
-```bash
-docker compose up -d
-```
-
-Esse comando sobe o PostgreSQL e inicializa a extensão `vector`.
-
-## 3) Criar ambiente virtual e instalar dependências
-
-```bash
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-## 4) Próximos passos (execução)
-
-Após configurar o ambiente, execute os scripts da pasta `src` conforme a implementação:
-
-```bash
-python3 src/ingest.py
-python3 src/chat.py
-```
-
-## Rodar o chat (CLI)
-
-Após a ingestão, rode o chat:
-
-```bash
-python3 src/chat.py
-```
-
-Comandos no chat:
-
-- `:help` mostra ajuda
-- `:exit` ou `:quit` sai do chat
-
-Opções úteis:
-
-```bash
-python3 src/chat.py --debug
-python3 src/chat.py --k 10 --max-context-chars 12000
-```
-
-## Regras do desafio (fora do contexto)
-
-Se a informação não estiver explicitamente no CONTEXTO recuperado do banco vetorial, a resposta deve ser:
-
-```text
-Não tenho informações necessárias para responder sua pergunta.
-```
